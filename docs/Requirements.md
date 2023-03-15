@@ -17,4 +17,4 @@
 
  - The "Employers" class can have attributes such as "id", "name", etc., to represent the details of the employer.
 
-![DomainModel]("https://github.com/FEUP-LEIC-ES-2022-23/2LEIC12T4/blob/main/images/DomainModel.jpg")
+![DomainModel](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC12T4/blob/main/images/DomainModel.png)
