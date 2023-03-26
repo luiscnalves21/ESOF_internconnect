@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:internconnect/company_login_page.dart';
-import 'package:internconnect/company_signup_page.dart';
-import 'package:internconnect/student_signup_page.dart';
-import 'main_page.dart';
+import 'package:internconnect/screens/authenticate/company_signup.dart';
+import 'package:internconnect/screens/authenticate/student_login.dart';
+import 'package:internconnect/screens/home/home.dart';
 
-class StudentLoginPage extends StatefulWidget {
-  const StudentLoginPage({super.key});
+class CompanyLogin extends StatefulWidget {
+  const CompanyLogin({super.key});
 
   @override
-  State<StudentLoginPage> createState() => _StudentLoginPageState();
+  State<CompanyLogin> createState() => _CompanyLoginState();
 }
 
-class _StudentLoginPageState extends State<StudentLoginPage> {
+class _CompanyLoginState extends State<CompanyLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
 
   void _login() {
-    // Implement login logic here, such as calling a web service API to validate the user's credentials
-    // Assume the login is successful for this example
 
     if (_emailController.text == "1234@gmail.com" &&
         _passwordController.text == "1234") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
+        MaterialPageRoute(builder: (context) => const Home()),
       );
     }
   }
@@ -56,6 +54,13 @@ class _StudentLoginPageState extends State<StudentLoginPage> {
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
+                  controller: _companyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Company Name',
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
@@ -72,7 +77,7 @@ class _StudentLoginPageState extends State<StudentLoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const StudentSignupPage()),
+                      MaterialPageRoute(builder: (context) => const CompanySignup()),
                     );
                   },
                   child: const Text.rich(
@@ -100,12 +105,12 @@ class _StudentLoginPageState extends State<StudentLoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const CompanyLoginPage()),
+                      MaterialPageRoute(builder: (context) => const StudentLogin()),
                     );
                   },
                   child: const Text.rich(
                     TextSpan(
-                      text: 'Are you an employer? ',
+                      text: 'Are you an student? ',
                       style:
                         TextStyle(
                           color: Colors.black, 

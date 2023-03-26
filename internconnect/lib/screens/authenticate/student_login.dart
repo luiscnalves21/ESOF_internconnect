@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:internconnect/company_signup_page.dart';
-import 'package:internconnect/student_login_page.dart';
-import 'package:internconnect/student_signup_page.dart';
-import 'main_page.dart';
+import 'package:internconnect/screens/authenticate/company_login.dart';
+import 'package:internconnect/screens/authenticate/student_signup.dart';
+import 'package:internconnect/screens/home/home.dart';
 
-class CompanyLoginPage extends StatefulWidget {
-  const CompanyLoginPage({super.key});
+class StudentLogin extends StatefulWidget {
+  const StudentLogin({super.key});
 
   @override
-  State<CompanyLoginPage> createState() => _CompanyLoginPageState();
+  State<StudentLogin> createState() => _StudentLoginState();
 }
 
-class _CompanyLoginPageState extends State<CompanyLoginPage> {
+class _StudentLoginState extends State<StudentLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _companyController = TextEditingController();
 
   void _login() {
+    // Implement login logic here, such as calling a web service API to validate the user's credentials
+    // Assume the login is successful for this example
 
     if (_emailController.text == "1234@gmail.com" &&
         _passwordController.text == "1234") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
+        MaterialPageRoute(builder: (context) => const Home()),
       );
     }
   }
@@ -55,13 +55,6 @@ class _CompanyLoginPageState extends State<CompanyLoginPage> {
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
-                  controller: _companyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Company Name',
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                TextField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
@@ -78,24 +71,22 @@ class _CompanyLoginPageState extends State<CompanyLoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const CompanySignupPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const StudentSignup()),
                     );
                   },
                   child: const Text.rich(
                     TextSpan(
                       text: 'Don\'t have an account? ',
                       style: TextStyle(
-                        color: Colors.black, 
-                        fontWeight: FontWeight.bold
-                      ),
+                          color: Colors.black, fontWeight: FontWeight.bold),
                       children: <TextSpan>[
                         TextSpan(
                           text: 'Sign up now!',
                           style: TextStyle(
-                            color: Colors.red, 
-                            fontWeight: FontWeight.bold, 
-                            decoration: TextDecoration.underline
-                          ),
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline),
                         ),
                       ],
                     ),
@@ -106,25 +97,22 @@ class _CompanyLoginPageState extends State<CompanyLoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const StudentLoginPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const CompanyLogin()),
                     );
                   },
                   child: const Text.rich(
                     TextSpan(
-                      text: 'Are you an student? ',
-                      style:
-                        TextStyle(
-                          color: Colors.black, 
-                          fontWeight: FontWeight.bold
-                        ),
+                      text: 'Are you an employer? ',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
                       children: <TextSpan>[
                         TextSpan(
                           text: 'Click here!',
                           style: TextStyle(
-                            color: Colors.red, 
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline
-                          ),
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline),
                         ),
                       ],
                     ),

@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'main_page.dart';
+import 'package:internconnect/screens/home/home.dart';
 
-class StudentSignupPage extends StatefulWidget {
-  const StudentSignupPage({super.key});
+class CompanySignup extends StatefulWidget {
+  const CompanySignup({super.key});
 
   @override
-  State<StudentSignupPage> createState() => _StudentSignupPageState();
+  State<CompanySignup> createState() => _CompanySignupState();
 }
 
-class _StudentSignupPageState extends State<StudentSignupPage> {
+class _CompanySignupState extends State<CompanySignup> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _signup() {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const MainPage()),
+      MaterialPageRoute(builder: (context) => const Home()),
     );
   }
 
@@ -62,6 +63,13 @@ class _StudentSignupPageState extends State<StudentSignupPage> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     labelText: 'Email',
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
+                  controller: _companyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Company Name',
                   ),
                 ),
                 const SizedBox(height: 16.0),

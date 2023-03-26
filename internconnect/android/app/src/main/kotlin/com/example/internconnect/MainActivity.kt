@@ -1,4 +1,4 @@
-package com.example.internconnect
+package com.es.internconnect
 
 import io.flutter.embedding.android.FlutterActivity
 

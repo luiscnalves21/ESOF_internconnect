@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.internconnect">
+    package="com.es.internconnect">
    <application
         android:label="interNconnect"
         android:name="${applicationName}"

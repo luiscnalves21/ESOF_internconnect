@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'available_internships.dart';
 
-import 'home_page.dart';
-
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<Home> createState() => _HomeState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _HomeState extends State<Home> {
   int currPage = 0;
 
   @override
@@ -18,7 +17,17 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: HomePage(),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (BuildContext context) {
+                  return const AvailableInternships();
+                }),
+              );
+            },
+            child: const Text('Available Internships')),
+      ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
