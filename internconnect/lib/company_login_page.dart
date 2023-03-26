@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:internconnect/home_page.dart';
-import 'package:internconnect/signup_page_user.dart';
+import 'package:internconnect/company_signup_page.dart';
+import 'package:internconnect/student_login_page.dart';
+import 'package:internconnect/student_signup_page.dart';
 import 'main_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class CompanyLoginPage extends StatefulWidget {
+  const CompanyLoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CompanyLoginPage> createState() => _CompanyLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CompanyLoginPageState extends State<CompanyLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
 
   void _login() {
-    // Implement login logic here, such as calling a web service API to validate the user's credentials
-    // Assume the login is successful for this example
 
     if (_emailController.text == "1234@gmail.com" &&
         _passwordController.text == "1234") {
@@ -55,6 +55,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
+                  controller: _companyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Company Name',
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
@@ -71,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignupPage()),
+                      MaterialPageRoute(builder: (context) => const CompanySignupPage()),
                     );
                   },
                   child: const Text.rich(
@@ -99,12 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignupPage()),
+                      MaterialPageRoute(builder: (context) => const StudentLoginPage()),
                     );
                   },
                   child: const Text.rich(
                     TextSpan(
-                      text: 'Are you an employer? ',
+                      text: 'Are you an student? ',
                       style:
                         TextStyle(
                           color: Colors.black, 

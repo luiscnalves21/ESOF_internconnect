@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'login_page_user.dart';
+import 'student_login_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'interNconnect',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.red),
-      home: LoginPage(),
+      home: StudentLoginPage(),
     );
   }
 }
