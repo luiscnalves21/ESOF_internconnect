@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:internconnect/services/auth.dart';
 import 'available_internships.dart';
 
 class Home extends StatefulWidget {
@@ -9,6 +10,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  final AuthService _auth = AuthService();
   int currPage = 0;
 
   @override
@@ -16,6 +19,14 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await _auth.signOut();
+            },
+          ),
+        ],
       ),
       body: Center(
         child: ElevatedButton(
