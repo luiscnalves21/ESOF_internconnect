@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:internconnect/services/auth.dart';
 import 'package:internconnect/screens/home/home.dart';
 
 class StudentSignup extends StatefulWidget {
@@ -9,17 +10,27 @@ class StudentSignup extends StatefulWidget {
 }
 
 class _StudentSignupState extends State<StudentSignup> {
+
+  final AuthService _auth = AuthService();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _signup() {
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Home()),
-    );
+    dynamic result = _auth.registerWithEmailAndPassword(
+        _emailController.text, _passwordController.text);
+    if (result == null) {
+      print('error signing in');
+    } else {
+      print('signed in');
+      print(result.uid);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+      );
+    }
   }
 
   Widget build(BuildContext context) {

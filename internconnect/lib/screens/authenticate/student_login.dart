@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:internconnect/screens/authenticate/company_login.dart';
 import 'package:internconnect/screens/authenticate/student_signup.dart';
-import 'package:internconnect/screens/home/home.dart';
+import 'package:internconnect/services/auth.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({super.key});
@@ -11,20 +11,13 @@ class StudentLogin extends StatefulWidget {
 }
 
 class _StudentLoginState extends State<StudentLogin> {
+  final AuthService _auth = AuthService();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _login() {
-    // Implement login logic here, such as calling a web service API to validate the user's credentials
-    // Assume the login is successful for this example
-
-    if (_emailController.text == "1234@gmail.com" &&
-        _passwordController.text == "1234") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()),
-      );
-    }
+    
   }
 
   Widget build(BuildContext context) {
@@ -64,7 +57,19 @@ class _StudentLoginState extends State<StudentLogin> {
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: (_login),
-                  child: const Text('LOGIN'),
+                  child: const Text('Login'),
+                ),
+                ElevatedButton(
+                  child: Text('Continue as Guest'),
+                  onPressed: () async {
+                    dynamic result = await _auth.signInAnon();
+                    if (result == null) {
+                      print('error signing in');
+                    } else {
+                      print('signed in');
+                      print(result.uid);
+                    }
+                  },
                 ),
                 const SizedBox(height: 20.0),
                 GestureDetector(
