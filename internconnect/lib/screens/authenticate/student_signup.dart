@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:internconnect/services/auth.dart';
-import 'package:internconnect/screens/home/home.dart';
 
 class StudentSignup extends StatefulWidget {
   const StudentSignup({super.key});
@@ -12,26 +11,12 @@ class StudentSignup extends StatefulWidget {
 class _StudentSignupState extends State<StudentSignup> {
 
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _signup() {
-    dynamic result = _auth.registerWithEmailAndPassword(
-        _emailController.text, _passwordController.text);
-    if (result == null) {
-      print('error signing in');
-    } else {
-      print('signed in');
-      print(result.uid);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()),
-      );
-    }
-  }
+  String name = "";
+  String email = "";
+  String password = "";
+  String error = "";
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,42 +36,73 @@ class _StudentSignupState extends State<StudentSignup> {
                       color: Colors.red,
                       fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 70.0),
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
+                const SizedBox(height: 90.0),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        keyboardType: TextInputType.name,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Enter your name' : null,
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                        ),
+                        onChanged: (val) {
+                          setState(() {
+                            name = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Enter your email' : null,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                        ),
+                        onChanged: (val) {
+                          setState(() {
+                            email = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        validator: (value) => value!.length < 6
+                            ? 'Enter a password 6+ chars long'
+                            : null,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                        obscureText: true,
+                        onChanged: (val) {
+                          setState(() {
+                            password = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 40.0),
+                      ElevatedButton(
+                        child: const Text('Sign Up'),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            dynamic result =
+                                await _auth.registerWithEmailAndPassword(
+                                    name, email, password);
+                            if (result == null) {
+                              setState(() {
+                                error = 'Please supply a valid email';
+                              });
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                TextField(
-                  controller: _mobileController,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                    labelText: 'Mobile Number',
-                    prefixText: '+',
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                TextField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 40.0),
-                ElevatedButton(
-                  child: const Text('SIGN UP'),
-                  onPressed: (_signup),
                 ),
                 const SizedBox(height: 20.0),
                 GestureDetector(
@@ -97,22 +113,24 @@ class _StudentSignupState extends State<StudentSignup> {
                     TextSpan(
                       text: 'Already have an account? ',
                       style: TextStyle(
-                        color: Colors.black, 
-                        fontWeight: FontWeight.bold
-                      ),
+                          color: Colors.black, fontWeight: FontWeight.bold),
                       children: <TextSpan>[
                         TextSpan(
                           text: 'Login now!',
                           style: TextStyle(
-                            color: Colors.red, 
-                            fontWeight: FontWeight.bold, 
-                            decoration: TextDecoration.underline
-                          ),
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline),
                         ),
                       ],
                     ),
                   ),
                 ),
+                SizedBox(height: 30.0),
+                Text(
+                  error,
+                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                )
               ],
             ),
           ),

@@ -11,14 +11,11 @@ class StudentLogin extends StatefulWidget {
 }
 
 class _StudentLoginState extends State<StudentLogin> {
+
   final AuthService _auth = AuthService();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _login() {
-    
-  }
+  String email = "";
+  String password = "";
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,25 +36,44 @@ class _StudentLoginState extends State<StudentLogin> {
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 150.0),
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
+                Form(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                        ),
+                        onChanged: (val) {
+                          setState(() {
+                            email = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                        obscureText: true,
+                        onChanged: (val) {
+                          setState(() {
+                            password = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
+                      ElevatedButton(
+                        onPressed: () async {
+
+                        },
+                        child: const Text('Login'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(150, 35),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                TextField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: (_login),
-                  child: const Text('Login'),
                 ),
                 ElevatedButton(
                   child: Text('Continue as Guest'),
@@ -65,11 +81,11 @@ class _StudentLoginState extends State<StudentLogin> {
                     dynamic result = await _auth.signInAnon();
                     if (result == null) {
                       print('error signing in');
-                    } else {
-                      print('signed in');
-                      print(result.uid);
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(150, 35),
+                  ),
                 ),
                 const SizedBox(height: 20.0),
                 GestureDetector(

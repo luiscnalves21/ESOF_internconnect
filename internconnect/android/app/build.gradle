@@ -46,7 +46,7 @@ android {
     defaultConfig {
         applicationId "com.es.internconnect"
         minSdkVersion 21
-        targetSdkVersion 18
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
