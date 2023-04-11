@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:internconnect/screens/home/loading_page.dart';
 import 'package:internconnect/services/auth.dart';
 
 class StudentSignup extends StatefulWidget {
@@ -9,7 +10,6 @@ class StudentSignup extends StatefulWidget {
 }
 
 class _StudentSignupState extends State<StudentSignup> {
-
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
@@ -88,14 +88,26 @@ class _StudentSignupState extends State<StudentSignup> {
                         child: const Text('Sign Up'),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            // Navigate to the LoadingPage
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoadingPage()),
+                            );                          
                             dynamic result =
                                 await _auth.registerWithEmailAndPassword(
-                                    name, email, password);
+                              name,
+                              email,
+                              password,
+                            );
                             if (result == null) {
+                              Navigator.pop(context);
                               setState(() {
-                                error = 'Please supply a valid email';
+                                error =
+                                    'Please supply a valid email or\nthis email is already being used';
                               });
                             } else {
+                              Navigator.pop(context);
                               Navigator.pop(context);
                             }
                           }
@@ -126,8 +138,9 @@ class _StudentSignupState extends State<StudentSignup> {
                     ),
                   ),
                 ),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 Text(
+                  textAlign: TextAlign.center,
                   error,
                   style: const TextStyle(color: Colors.red, fontSize: 14.0),
                 )

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:internconnect/screens/authenticate/company_login.dart';
 import 'package:internconnect/screens/authenticate/student_signup.dart';
+import 'package:internconnect/screens/home/loading_page.dart';
 import 'package:internconnect/services/auth.dart';
 
 class StudentLogin extends StatefulWidget {
@@ -11,11 +12,12 @@ class StudentLogin extends StatefulWidget {
 }
 
 class _StudentLoginState extends State<StudentLogin> {
-
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   String email = "";
   String password = "";
+  String error = "";
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +39,7 @@ class _StudentLoginState extends State<StudentLogin> {
                 ),
                 const SizedBox(height: 150.0),
                 Form(
+                  key: _formKey,
                   child: Column(
                     children: [
                       TextFormField(
@@ -64,9 +67,7 @@ class _StudentLoginState extends State<StudentLogin> {
                       ),
                       const SizedBox(height: 20.0),
                       ElevatedButton(
-                        onPressed: () async {
-
-                        },
+                        onPressed: () async {},
                         child: const Text('Login'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(150, 35),
@@ -78,9 +79,19 @@ class _StudentLoginState extends State<StudentLogin> {
                 ElevatedButton(
                   child: Text('Continue as Guest'),
                   onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoadingPage()),
+                      );
+                    }
                     dynamic result = await _auth.signInAnon();
                     if (result == null) {
-                      print('error signing in');
+                      setState(() {
+                        error = 'Error signing in';
+                      });
+                    } else {
+                      Navigator.pop(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -138,6 +149,12 @@ class _StudentLoginState extends State<StudentLogin> {
                       ],
                     ),
                   ),
+                ),
+                SizedBox(height: 30.0),
+                Text(
+                  textAlign: TextAlign.center,
+                  error,
+                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
                 )
               ],
             ),
