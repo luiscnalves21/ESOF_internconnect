@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
         ),
         body: Column(
           children: [
-            StudentList(),
+            Expanded(child: StudentList()),
             Container(
               margin: EdgeInsets.only(bottom: 200),
               child: ElevatedButton(
