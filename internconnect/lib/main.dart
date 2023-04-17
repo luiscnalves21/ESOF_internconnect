@@ -5,7 +5,7 @@ import 'package:internconnect/screens/wrapper.dart';
 import 'package:internconnect/services/auth.dart';
 import 'package:provider/provider.dart';
 
-void main() async {  
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
