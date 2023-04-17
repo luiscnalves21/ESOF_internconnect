@@ -14,8 +14,7 @@ class _StudentListState extends State<StudentList> {
   Widget build(BuildContext context) {
     final students = Provider.of<List<Student>?>(context);
 
-    return Expanded(
-      child: ListView.builder(
+    return ListView.builder(
         itemCount: students?.length,
         itemBuilder: (context, index) {
           return Card(
@@ -25,7 +24,6 @@ class _StudentListState extends State<StudentList> {
             ),
           );
         },
-      ),
     );
   }
 }
