@@ -145,6 +145,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Padding(
@@ -152,7 +153,7 @@ class _SearchState extends State<Search> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search for internships',
+                hintText: 'Search for jobs',
                 fillColor: Colors.white,
                 filled: true,
                 enabledBorder: const OutlineInputBorder(
@@ -199,12 +200,12 @@ class _SearchState extends State<Search> {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                         side: const BorderSide(
-                          color: Colors.black12,
+                          color: Colors.red,
                           width: 1.0,
                         ),
                       ),
@@ -223,12 +224,8 @@ class _SearchState extends State<Search> {
                               ),
                             ],
                           ),
-                          Column(
-                            children: [
-                              Wrap(
-                                children: displayInfo(_jsonData, index)
-                              ),
-                            ],
+                          Wrap(
+                            children: displayInfo(_jsonData, index)
                           ),
                         ],
                       ),
