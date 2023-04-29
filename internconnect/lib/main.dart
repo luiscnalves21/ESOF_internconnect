@@ -4,6 +4,7 @@ import 'package:internconnect/models/firebase_user.dart';
 import 'package:internconnect/screens/wrapper.dart';
 import 'package:internconnect/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:internconnect/screens/profile_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.red),
         home: Wrapper(),
+        routes: {
+          '/profile': (context) => ProfilePage(),
+        },
       ),
     );
   }

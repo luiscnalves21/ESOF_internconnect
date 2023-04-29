@@ -42,6 +42,10 @@ class _HomeState extends State<Home> {
               await _auth.signOut();
             },
           ),
+          ElevatedButton(
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
+            child: Text('Go to Profile'),
+          ),
         ],
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
