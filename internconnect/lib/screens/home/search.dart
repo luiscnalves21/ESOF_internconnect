@@ -67,13 +67,13 @@ class _SearchState extends State<Search> {
           ),
         );
       }
-      setState(() => _jsonData.addAll(jsonData));
+      if (mounted) setState(() => _jsonData.addAll(jsonData));
       _page++;
     } else {
       throw Exception('Failed to load data from API');
     }
 
-    setState(() => _loading = false);
+    if (mounted) setState(() => _loading = false);
   }
 
   void _handleSearch(String query) {

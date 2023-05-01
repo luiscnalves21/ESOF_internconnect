@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:internconnect/services/auth.dart';
-import 'available_internships.dart';
-import 'package:internconnect/services/database.dart';
-import 'package:provider/provider.dart';
 import 'package:internconnect/screens/home/search.dart';
-import 'package:internconnect/models/student.dart';
+import 'package:internconnect/screens/profile_page.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,7 +16,7 @@ class _HomeState extends State<Home> {
   static const List<Widget> _widgetOptions = <Widget>[
     Text('Home'),
     Search(),
-    Text('Profile'),
+    ProfilePage(),
   ];
 
   static const List<String> _title = ['Home', 'Search', 'Profile'];
@@ -41,10 +38,6 @@ class _HomeState extends State<Home> {
             onPressed: () async {
               await _auth.signOut();
             },
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/profile'),
-            child: Text('Go to Profile'),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -10,7 +11,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   String _name = 'John Doe';
   int _age = 25;
-  String _email = 'john.doe@example.com';
+  final String? _email = FirebaseAuth.instance.currentUser?.email;
   List<String> _softSkills = [];
   List<String> _certificates = [];
 
@@ -36,7 +37,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
