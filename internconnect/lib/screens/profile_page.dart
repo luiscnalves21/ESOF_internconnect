@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -10,6 +11,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String _name = 'John Doe';
+  TextEditingController _nameController = TextEditingController();
   int _age = 25;
   final String? _email = FirebaseAuth.instance.currentUser?.email;
   List<String> _softSkills = [];
@@ -18,11 +20,49 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController _softSkillController = TextEditingController();
   TextEditingController _certificateController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+  Future<void> _loadData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot document = await users.doc(user.uid).get();
+
+    if (document.exists) {
+      setState(() {
+        _nameController.text = document['name'];
+        _age = document['age'];
+        _softSkills = List<String>.from(document['softSkills']);
+        _certificates = List<String>.from(document['certificates']);
+      });
+    }
+  }
+
+  Future<void> _saveData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    await users.doc(user.uid).set({
+      'name': _name,
+      'age': _age,
+      'email': _email,
+      'softSkills': _softSkills,
+      'certificates': _certificates,
+    });
+  }
+
+
   void _addSoftSkill(String skill) {
     if (skill.isNotEmpty) {
       setState(() {
         _softSkills.add(skill);
       });
+      _saveData();
     }
   }
 
@@ -31,6 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _certificates.add(certificate);
       });
+      _saveData();
     }
   }
 
@@ -38,26 +79,50 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Name: $_name', style: TextStyle(fontSize: 18)),
-            Text('Age: $_age', style: TextStyle(fontSize: 18)),
-            Text('Email: $_email', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 16),
-            _buildSectionTitle('Soft Skills'),
-            _buildAddItemSection(_softSkillController, 'Add a soft skill', _addSoftSkill),
-            _buildItemList(_softSkills),
-            SizedBox(height: 16),
-            _buildSectionTitle('Certificates'),
-            _buildAddItemSection(_certificateController, 'Add a certificate', _addCertificate),
-            _buildItemList(_certificates),
-          ],
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Profile',
+                  style: TextStyle(fontSize: 60.0, color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 60.0),
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    _name = value;
+                    _saveData();
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                Text('Age: $_age', style: TextStyle(fontSize: 18)),
+                Text('Email: $_email', style: TextStyle(fontSize: 18)),
+                SizedBox(height: 16),
+                _buildSectionTitle('Soft Skills'),
+                _buildAddItemSection(_softSkillController, 'Add a soft skill', _addSoftSkill),
+                _buildItemList(_softSkills),
+                SizedBox(height: 16),
+                _buildSectionTitle('Certificates'),
+                _buildAddItemSection(_certificateController, 'Add a certificate', _addCertificate),
+                _buildItemList(_certificates),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildSectionTitle(String title) {
     return Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold));
