@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html/parser.dart';
 import 'package:internconnect/shared/loading.dart';
 
 class InternshipDetails extends StatefulWidget {
@@ -135,6 +136,13 @@ class _InternshipDetailsState extends State<InternshipDetails> {
     return widgets;
   }
 
+  String toHtml(String htmlString) {
+    final document = parse(htmlString);
+    final String parsedString =
+        parse(document.body!.text).documentElement!.text;
+    return parsedString;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -152,6 +160,8 @@ class _InternshipDetailsState extends State<InternshipDetails> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final jsonData = snapshot.data!;
+            String myHtml = jsonData['body'];
+            var documentHtml = parse(myHtml);
             return Scaffold(
               body: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -225,7 +235,11 @@ class _InternshipDetailsState extends State<InternshipDetails> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Html(data: jsonData['body']),
+                              Html(
+                                  data: documentHtml.body!.outerHtml.substring(
+                                      0,
+                                      documentHtml.body!.outerHtml.indexOf(
+                                          '<p style=\"visibility: hidden;\"'))),
                             ],
                           ),
                         ),
