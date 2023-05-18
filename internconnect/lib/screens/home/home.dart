@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:internconnect/services/auth.dart';
-import 'package:internconnect/screens/home/search.dart';
+import 'package:internconnect/screens/home/jobs.dart';
 import 'package:internconnect/screens/profile_page.dart';
+
+import 'courses.dart';
+import 'events.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,14 +15,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
-  int _selectedIndex = 0;
+  int _selectedIndex = 3;
+  //bool showBottomBar = true;
   static const List<Widget> _widgetOptions = <Widget>[
-    Text('Home'),
-    Search(),
+    Jobs(),
+    Courses(),
+    Events(),
     ProfilePage(),
   ];
 
-  static const List<String> _title = ['Home', 'Search', 'Profile'];
+  static const List<String> _title = ['Search Jobs', 'Search Courses', 'Search Events', 'Profile'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -49,12 +54,16 @@ class _HomeState extends State<Home> {
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.work_outline_rounded),
+            label: 'Jobs',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.school_rounded),
+            label: 'Courses',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_rounded),
+            label: 'Events',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

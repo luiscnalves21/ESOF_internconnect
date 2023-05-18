@@ -24,10 +24,7 @@ class MyApp extends StatelessWidget {
         title: 'interNconnect',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.red),
-        home: Wrapper(),
-        routes: {
-          '/profile': (context) => ProfilePage(),
-        },
+        home: const Wrapper(),
       ),
     );
   }

@@ -83,7 +83,7 @@ class _CompanySignupState extends State<CompanySignup> {
                                   setState(() => loading = true);
                                   dynamic result =
                                       await _auth.registerWithEmailAndPassword(
-                                          name, email, password, 'company');
+                                          name.trim(), email, password, 'company');
                                   if (result == null) {
                                     setState(() {
                                       error = 'Please supply a valid email or\nthis email is already being used';

@@ -1,6 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/firebase_user.dart';
+import '../models/users.dart';
+import '../services/database.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -10,125 +13,170 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _name = 'John Doe';
-  TextEditingController _nameController = TextEditingController();
-  int _age = 25;
-  final String? _email = FirebaseAuth.instance.currentUser?.email;
+  String? _type;
+  String? _name;
+  String? _email;
   List<String> _softSkills = [];
   List<String> _certificates = [];
 
-  TextEditingController _softSkillController = TextEditingController();
-  TextEditingController _certificateController = TextEditingController();
+  final TextEditingController _softSkillController = TextEditingController();
+  final TextEditingController _certificateController = TextEditingController();
+
+  bool nameEditable = false;
+
+  bool isButtonClicked = true;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-  Future<void> _loadData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    DocumentSnapshot document = await users.doc(user.uid).get();
-
-    if (document.exists) {
-      setState(() {
-        _nameController.text = document['name'];
-        _age = document['age'];
-        _softSkills = List<String>.from(document['softSkills']);
-        _certificates = List<String>.from(document['certificates']);
-      });
-    }
   }
 
-  Future<void> _saveData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await users.doc(user.uid).set({
-      'name': _name,
-      'age': _age,
-      'email': _email,
-      'softSkills': _softSkills,
-      'certificates': _certificates,
+  void _editableName() {
+    setState(() {
+      nameEditable = !nameEditable;
     });
   }
 
-
-  void _addSoftSkill(String skill) {
-    if (skill.isNotEmpty) {
-      setState(() {
-        _softSkills.add(skill);
-      });
-      _saveData();
-    }
-  }
-
-  void _addCertificate(String certificate) {
-    if (certificate.isNotEmpty) {
-      setState(() {
-        _certificates.add(certificate);
-      });
-      _saveData();
-    }
+  void _handleClick() {
+    setState(() {
+      isButtonClicked = !isButtonClicked;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Profile',
-                  style: TextStyle(fontSize: 60.0, color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 60.0),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    _name = value;
-                    _saveData();
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                Text('Age: $_age', style: TextStyle(fontSize: 18)),
-                Text('Email: $_email', style: TextStyle(fontSize: 18)),
-                SizedBox(height: 16),
-                _buildSectionTitle('Soft Skills'),
-                _buildAddItemSection(_softSkillController, 'Add a soft skill', _addSoftSkill),
-                _buildItemList(_softSkills),
-                SizedBox(height: 16),
-                _buildSectionTitle('Certificates'),
-                _buildAddItemSection(_certificateController, 'Add a certificate', _addCertificate),
-                _buildItemList(_certificates),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+    final user = Provider.of<FirebaseUser?>(context);
 
+    return StreamBuilder<UserData>(
+        stream: DatabaseService(uid: user?.uid).userData,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            UserData userData = snapshot.data!;
+              _type = userData.type;
+              _name = userData.name;
+              _email = userData.email;
+              _softSkills = userData.softSkills;
+              _certificates = userData.certificates;
+              return Scaffold(
+                body: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: (_type == 'user') ? const Icon(
+                              Icons.person_outline_rounded,
+                              size: 150,
+                            ) : const Icon(
+                              Icons.business_center_outlined,
+                              size: 150,
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          const Text(
+                            'Name:',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller:
+                                      TextEditingController(text: _name),
+                                  decoration: const InputDecoration(
+                                    border: UnderlineInputBorder(),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                        width: 2.0,
+                                      ),
+                                    ),
+                                  ),
+                                  onChanged: (val) => _name = val.trim(),
+                                  enabled: nameEditable,
+                                ),
+                              ),
+                              IconButton(
+                                icon: isButtonClicked
+                                    ? const Icon(Icons.edit)
+                                    : const Icon(Icons.check),
+                                onPressed: () {
+                                  if (_name!.isNotEmpty) {
+                                    DatabaseService(uid: user!.uid)
+                                        .updateUserName(_name!);
+                                    _handleClick();
+                                    _editableName();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16.0),
+                          const Text('Email:', style: TextStyle(fontSize: 18)),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller:
+                                      TextEditingController(text: _email),
+                                  decoration: const InputDecoration(
+                                    border: UnderlineInputBorder(),
+                                  ),
+                                  enabled: false,
+                                ),
+                              ),
+                              const IconButton(
+                                  icon: Icon(Icons.lock_outline),
+                                  onPressed: null),
+                            ],
+                          ),
+                          const SizedBox(height: 64),
+                          (_type == 'user') ? _buildSectionTitle('Soft Skills') : Container(),
+                          const SizedBox(height: 16),
+                          (_type == 'user') ? _buildAddItemSection(_softSkillController,
+                              'Add a soft skill', user!.uid) : Container(),
+                          const SizedBox(height: 16),
+                          (_type == 'user') ? _buildItemList(_softSkills, user!.uid, 'softSkills') : Container(),
+                          const SizedBox(height: 32),
+                          (_type == 'user') ? _buildSectionTitle('Certificates') : Container(),
+                          const SizedBox(height: 16),
+                          (_type == 'user') ? _buildAddItemSection(_certificateController,
+                              'Add a certificate', user!.uid) : Container(),
+                          const SizedBox(height: 16),
+                          (_type == 'user') ? _buildItemList(
+                              _certificates, user!.uid, 'certificates') : Container(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+          } else {
+            return const Center(
+              child: Icon(
+                Icons.question_mark_outlined,
+                size: 300
+              ),
+            );
+          }
+        });
+  }
 
   Widget _buildSectionTitle(String title) {
-    return Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold));
+    if (_name == 'Anonymous') return Container();
+    return Text(title,
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold));
   }
 
-  Widget _buildAddItemSection(TextEditingController controller, String hintText, Function(String) onAdd) {
+  Widget _buildAddItemSection(
+      TextEditingController controller, String hintText, String uid) {
+    if (_name == 'Anonymous') return Container();
     return Row(
       children: [
         Expanded(
@@ -136,14 +184,20 @@ class _ProfilePageState extends State<ProfilePage> {
             controller: controller,
             decoration: InputDecoration(
               hintText: hintText,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
           ),
         ),
         IconButton(
-          icon: Icon(Icons.add_circle),
+          icon: const Icon(Icons.add_circle),
           onPressed: () {
-            onAdd(controller.text);
+            if (hintText == 'Add a soft skill') {
+              _softSkills.add(controller.text);
+              DatabaseService(uid: uid).updateUserSoftSkills(_softSkills);
+            } else {
+              _certificates.add(controller.text);
+              DatabaseService(uid: uid).updateUserCertificates(_certificates);
+            }
             controller.clear();
           },
         ),
@@ -151,16 +205,30 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildItemList(List<String> items) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-      itemBuilder: (context, index) => ListTile(
-        title: Text(items[index]),
-        trailing: IconButton(
-          icon: Icon(Icons.delete),
-          onPressed: () => setState(() => items.removeAt(index)),
+  Widget _buildItemList(List<String> items, String uid, String type) {
+    return Expanded(
+      child: Container(
+        color: Colors.grey[200],
+        child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) => ListTile(
+            title: Text(items[index]),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                setState(() {
+                  if (type == 'softSkills') {
+                    _softSkills.removeAt(index);
+                    DatabaseService(uid: uid).updateUserSoftSkills(_softSkills);
+                  } else {
+                    _certificates.removeAt(index);
+                    DatabaseService(uid: uid)
+                        .updateUserCertificates(_certificates);
+                  }
+                });
+              },
+            ),
+          ),
         ),
       ),
     );

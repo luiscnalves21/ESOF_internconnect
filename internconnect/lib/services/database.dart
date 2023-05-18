@@ -1,41 +1,60 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/student.dart';
+import '../models/users.dart';
 
 class DatabaseService {
   final String? uid;
   DatabaseService({this.uid});
 
-  final CollectionReference studentCollection =
-      FirebaseFirestore.instance.collection('students');
-  final CollectionReference companyCollection =
-      FirebaseFirestore.instance.collection('companies');
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
 
-  Future updateStudentData(String name, String email) async {
-    return await studentCollection.doc(uid).set({
+  List<String> _softSkills = [];
+  List<String> _certificates = [];
+
+  Future updateUserData(String name, String email, String type) async {
+    return await userCollection.doc(uid).set({
+      'type': type,
       'name': name,
       'email': email,
+      'softSkills': _softSkills,
+      'certificates': _certificates,
     });
   }
 
-  Future updateCompanyData(String name, String email) async {
-    return await companyCollection.doc(uid).set({
+  Future updateUserName(String name) async {
+    return await userCollection.doc(uid).update({
       'name': name,
-      'email': email,
     });
   }
 
-  // student list from snapshot
-  List<Student> _studentListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      return Student(
-        name: doc['name'] ?? '',
-        email: doc['email'] ?? '',
-      );
-    }).toList();
+  Future updateUserSoftSkills(List<String> softSkills) async {
+    _softSkills = softSkills;
+    return await userCollection.doc(uid).update({
+      'softSkills': _softSkills,
+    });
   }
 
-  Stream<List<Student>> get students {
-    return studentCollection.snapshots().map(_studentListFromSnapshot);
+  Future updateUserCertificates(List<String> certificates) async {
+    _certificates = certificates;
+    return await userCollection.doc(uid).update({
+      'certificates': _certificates,
+    });
+  }
+
+
+  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
+    return UserData(
+      uid: uid!,
+      type: snapshot['type'],
+      name: snapshot['name'],
+      email: snapshot['email'],
+      softSkills: List<String>.from(snapshot['softSkills']),
+      certificates: List<String>.from(snapshot['certificates']),
+    );
+  }
+
+  Stream<UserData> get userData {
+    return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
 }

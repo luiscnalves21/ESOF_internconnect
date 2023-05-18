@@ -65,7 +65,6 @@ class _StudentLoginState extends State<StudentLogin> {
                             ElevatedButton(
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => LoadingPage()));
                                   setState(() => loading = true);
                                   dynamic result =
                                       await _auth.signInWithEmailAndPassword(

@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
-import 'package:internconnect/screens/home/internship_details.dart';
+import 'package:internconnect/screens/home/course_details.dart';
 
-class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+class Courses extends StatefulWidget {
+  const Courses({Key? key}) : super(key: key);
 
   @override
-  State<Search> createState() => _SearchState();
+  State<Courses> createState() => _CoursesState();
 }
 
-class _SearchState extends State<Search> {
+class _CoursesState extends State<Courses> {
   List<dynamic> _jsonData = [];
   bool _loading = false;
   int _page = 1;
@@ -52,12 +52,12 @@ class _SearchState extends State<Search> {
     setState(() => _loading = true);
 
     final response = await http.get(Uri.parse(
-        'https://api.itjobs.pt/job/search.json?api_key=de6360c75f724fa56dca63fcca4dfaed&page=$_page&q=$_query'));
+        'https://api.itjobs.pt/course/search.json?api_key=de6360c75f724fa56dca63fcca4dfaed&page=$_page&q=$_query'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> temp = jsonDecode(response.body);
       List<dynamic> jsonData = [];
-      if (temp['total'] != 0) {
+      if (temp['total'] != 0 && temp['results'] != null) {
         jsonData = temp['results'];
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -87,28 +87,40 @@ class _SearchState extends State<Search> {
 
   List<Widget> displayInfo(List<dynamic>? locations, int index) {
     List<Widget> list = [];
-    String cities = '', fulltime = '';
-    if (locations![index]['locations'] != null) {
-      for (int i = 0; i < locations[index]['locations'].length; i++) {
-        if (i != 0) cities += ', ';
-        cities += locations[index]['locations'][i]['name'];
-      }
+    String price = '', hours = '';
+    if (locations![index]['price'] != null) {
+      price = '€${locations[index]['price']}';
       list.add(Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.location_on_outlined, color: Colors.red),
+            const Icon(Icons.euro_symbol_rounded, color: Colors.red),
             Padding(
               padding: const EdgeInsets.fromLTRB(5, 0, 10, 0),
-              child: Text(cities),
+              child: Text(price),
             )
           ],
         ),
       ));
     }
-    if (locations[index]['types'] != null) {
-      fulltime = locations[index]['types'][0]['name'];
+    if (locations[index]['isCertified']) {
+      list.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.text_snippet_outlined, color: Colors.red),
+            Padding(
+              padding: EdgeInsets.fromLTRB(5, 0, 10, 0),
+              child: Text('Certified'),
+            )
+          ],
+        ),
+      ));
+    }
+    if (locations[index]['hours'] != null) {
+      hours = '${locations[index]['hours']}h';
       list.add(Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -117,22 +129,7 @@ class _SearchState extends State<Search> {
             const Icon(Icons.timer_outlined, color: Colors.red),
             Padding(
               padding: const EdgeInsets.fromLTRB(5, 0, 10, 0),
-              child: Text(fulltime),
-            )
-          ],
-        ),
-      ));
-    }
-    if (locations[index]['allowRemote']) {
-      list.add(Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.wifi, color: Colors.red),
-            Padding(
-              padding: EdgeInsets.fromLTRB(5, 0, 10, 0),
-              child: Text('Remote'),
+              child: Text(hours),
             )
           ],
         ),
@@ -153,7 +150,7 @@ class _SearchState extends State<Search> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search for jobs',
+                hintText: 'Search for courses',
                 fillColor: Colors.white,
                 filled: true,
                 enabledBorder: const OutlineInputBorder(
@@ -196,7 +193,7 @@ class _SearchState extends State<Search> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          InternshipDetails(id: _jsonData[index]['id']),
+                          CourseDetails(id: _jsonData[index]['id']),
                     ),
                   ),
                   child: Padding(

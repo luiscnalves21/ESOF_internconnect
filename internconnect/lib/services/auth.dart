@@ -30,7 +30,8 @@ class AuthService {
   // sign in with email & password
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       User? user = result.user;
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -40,21 +41,17 @@ class AuthService {
   }
 
   // register with email & password
-  Future registerWithEmailAndPassword(String name, String email, String password, String type) async {
+  Future registerWithEmailAndPassword(
+      String name, String email, String password, String type) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       User? user = result.user;
 
-      // create a new document for the user with the uid
-      if (type == 'student') {
-        await DatabaseService(uid: user!.uid).updateStudentData(name, email);
-      } else {
-        await DatabaseService(uid: user!.uid).updateCompanyData(name, email);
-      }
-      
+      await DatabaseService(uid: user!.uid).updateUserData(name, email, type);
+
       return _userFromFirebaseUser(user);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -64,7 +61,6 @@ class AuthService {
     try {
       return await _auth.signOut();
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
