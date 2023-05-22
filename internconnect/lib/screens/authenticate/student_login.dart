@@ -46,6 +46,7 @@ class _StudentLoginState extends State<StudentLogin> {
                         child: Column(
                           children: [
                             TextFormField(
+                              key: const Key("emailfield"),
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) =>
                                   value!.isEmpty ? 'Enter your email' : null,
@@ -54,6 +55,7 @@ class _StudentLoginState extends State<StudentLogin> {
                             ),
                             const SizedBox(height: 16.0),
                             TextFormField(
+                              key: const Key("passwordfield"),
                                 validator: (value) => value!.length < 6
                                     ? 'Enter a password 6+ chars long'
                                     : null,
@@ -63,6 +65,7 @@ class _StudentLoginState extends State<StudentLogin> {
                                     setState(() => password = val)),
                             const SizedBox(height: 20.0),
                             ElevatedButton(
+                              key: const Key("LoginButton"),
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   setState(() => loading = true);
