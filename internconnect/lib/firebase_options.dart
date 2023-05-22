@@ -53,12 +53,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCd5X3lXhBgCsnWyRC3pPjwYbO7iHF6tzo',
-    appId: '1:1083753846676:android:c912088fcbeb73f70f2181',
-    messagingSenderId: '1083753846676',
-    projectId: 'studysphere-c6de1',
-    databaseURL:
-        'https://studysphere-c6de1-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'studysphere-c6de1.appspot.com',
+    apiKey: 'AIzaSyDpsEdL4zbQzYImaZBQ6tdikMwtSaSwuZc',
+    appId: '1:646203166579:android:174f579820093444f83f06',
+    messagingSenderId: '646203166579',
+    projectId: 'leic12g4',
+    storageBucket: 'com.es.internconnect',
   );
 }

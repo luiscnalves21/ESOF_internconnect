@@ -7,3 +7,4 @@ Feature: Main Screen Validates and then logs in
         And I fill the "passfield" field with "passwordwith_@"
         Then I tap the "LoginButton"
         Then I should have "HomePage" on screen
+        
