@@ -303,10 +303,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_gherkin
-      sha256: "17dcc9465034f0b2f08d669dbca1a9ddd85b8c67582012f6a83dc639403e4cca"
+      sha256: bacda3ef810e116bd66582d59ba58457e51e64977df0c1821e1a4f689bdf0186
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   flutter_html:
     dependency: "direct main"
     description:

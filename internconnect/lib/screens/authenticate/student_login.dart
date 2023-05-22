@@ -65,7 +65,7 @@ class _StudentLoginState extends State<StudentLogin> {
                                     setState(() => password = val)),
                             const SizedBox(height: 20.0),
                             ElevatedButton(
-                              key: const Key("LoginButton"),
+                              key: const Key("loginbtn"),
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   setState(() => loading = true);
